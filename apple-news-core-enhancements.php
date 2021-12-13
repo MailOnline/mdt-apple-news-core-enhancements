@@ -14,6 +14,7 @@ if ( ! class_exists( '\Apple_News' ) || ! class_exists( '\Admin_Apple_Settings' 
 	return;
 }
 
+require_once( __DIR__ . '/class-gutenberg.php' );
 require_once( __DIR__ . '/class-filters.php' );
 require_once( __DIR__ . '/class-auto-retry.php' );
 

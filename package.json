@@ -1,0 +1,21 @@
+{
+  "name": "apple-news-core-enhancements",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MailOnline/apple-news-core-enhancements.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MailOnline/apple-news-core-enhancements/issues"
+  },
+  "homepage": "https://github.com/MailOnline/apple-news-core-enhancements#readme",
+  "dependencies": {
+  }
+}
