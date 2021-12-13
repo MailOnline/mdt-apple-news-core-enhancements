@@ -7,7 +7,7 @@ namespace MDT\Apple_News_Core_Enhancements\Components;
  *
  * @package Metro\Apple_News\Components
  */
-class Tiktok extends \Apple_Exporter\Components\Component{
+class Tiktok extends \Apple_Exporter\Components\Component {
 
 	/**
 	 * Find Tiktok markup
@@ -36,8 +36,8 @@ class Tiktok extends \Apple_Exporter\Components\Component{
 	public function register_specs() {
 
 		$spec = [
-			"role" => "tiktok",
-			"URL" => "#src#"
+			'role' => 'tiktok',
+			'URL'  => '#src#',
 		];
 
 		$this->register_spec(
@@ -64,17 +64,17 @@ class Tiktok extends \Apple_Exporter\Components\Component{
 
 		$src = '';
 
-		if($container->getElementsByTagName( 'div' )->item( 0 )){
+		if ( $container->getElementsByTagName( 'div' )->item( 0 ) ) {
 			$blockquote = $container->getElementsByTagName( 'blockquote' )->item( 0 );
 
-			if(!$blockquote || !$blockquote->hasAttribute('cite')){
+			if ( ! $blockquote || ! $blockquote->hasAttribute( 'cite' ) ) {
 				return;
 			}
 
-			$src = $blockquote->getAttribute('cite');
+			$src = $blockquote->getAttribute( 'cite' );
 		}
 
-		if(!$src){
+		if ( ! $src ) {
 			return;
 		}
 

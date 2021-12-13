@@ -10,12 +10,12 @@
 
 namespace MDT\Apple_News_Core_Enhancements;
 
-if ( !class_exists('\Apple_News') || !class_exists('\Admin_Apple_Settings')){
+if ( ! class_exists( '\Apple_News' ) || ! class_exists( '\Admin_Apple_Settings' ) ) {
 	return;
 }
 
-require_once(__DIR__ . '/class-filters.php');
-require_once(__DIR__ . '/class-auto-retry.php');
+require_once( __DIR__ . '/class-filters.php' );
+require_once( __DIR__ . '/class-auto-retry.php' );
 
 Filters::init();
 Auto_Retry::init();
