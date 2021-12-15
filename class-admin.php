@@ -17,6 +17,11 @@ class Admin {
 		add_action( 'manage_posts_custom_column', [ __CLASS__, 'custom_manage_posts_content' ], 10, 2 );
 	}
 
+	/**
+	 * Whether or not to output the post columns
+	 *
+	 * @return bool
+	 */
 	public static function output_columns() {
 		return apply_filters( 'mdt_apple_news_ce_output_columns', true );
 	}
@@ -68,6 +73,7 @@ class Admin {
 		if ( ! current_user_can( $capability ) ) {
 			return false;
 		}
+
 		return true;
 	}
 }

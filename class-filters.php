@@ -16,6 +16,8 @@ class Filters {
 		add_filter( 'apple_news_post_args', [ __CLASS__, 'increase_api_timeout' ] );
 		add_filter( 'apple_news_skip_push', [ __CLASS__, 'skip_sending_post_to_apple_news' ], 10, 2 );
 		add_filter( 'apple_news_initialize_components', [ __CLASS__, 'add_custom_components' ] );
+		add_filter( 'apple_news_generate_json', [ __CLASS__, 'filter_json_content' ], 30, 2 );
+		add_filter( 'rest_prepare_post', [__CLASS__, 'delete_apple_news_notices'], 30);
 	}
 
 	/**
@@ -85,6 +87,52 @@ class Filters {
 
 		return $components;
 	}
+
+	/**
+	 * Clean up and edit the proposed article.json
+	 *
+	 * @param $json
+	 * @param $post_id
+	 *
+	 * @return array Apple News JSON
+	 */
+	public function filter_json_content( $json, $post_id ) {
+		$json = self::remove_empty_components( $json );
+
+		return $json;
+	}
+
+	/**
+	 * Filter the json array to remove empty components
+	 *
+	 * @param $json
+	 * @return mixed
+	 */
+	public function remove_empty_components( $json ) {
+		$json['components'] = array_values( array_filter( $json['components'] ) );
+
+		return $json;
+	}
+
+	/**
+	 * Deletes the 'apple_news_notices' field from the rest api response for posts
+	 * therefore preventing Apple News notices appearing in Gutenberg.
+	 *
+	 * @param object   $response WP_JSON reponse
+	 *
+	 * @return object WP_JSON response
+	 */
+	public function delete_apple_news_notices($response){
+		if(
+			isset($response->data['apple_news_notices'])
+			&& !apply_filters('mdt_apple_news_ce_show_gutenberg_editor_notices', false)
+		){
+			$response->data['apple_news_notices'] = [];
+		}
+
+		return $response;
+	}
+
 
 	/**
 	 * Simple helper for building an error message
