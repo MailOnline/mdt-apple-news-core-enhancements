@@ -17,5 +17,7 @@
   },
   "homepage": "https://github.com/MailOnline/apple-news-core-enhancements#readme",
   "dependencies": {
+    "@wordpress/scripts": "^19.2.2",
+    "nth-check": ">=2.0.1"
   }
 }
