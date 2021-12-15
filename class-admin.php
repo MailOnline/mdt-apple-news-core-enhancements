@@ -18,7 +18,7 @@ class Admin {
 	}
 
 	public static function output_columns() {
-		return apply_filters('mdt_apple_news_ce_output_columns', true);
+		return apply_filters( 'mdt_apple_news_ce_output_columns', true );
 	}
 
 	/**

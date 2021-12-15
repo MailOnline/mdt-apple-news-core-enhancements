@@ -41,21 +41,20 @@ class Filters {
 	 * user notices
 	 *
 	 * @param bool $reject
-	 * @param int $post_id
+	 * @param int  $post_id
 	 *
 	 * @throws \Apple_Actions\Action_Exception
 	 * @return bool
-	 *
 	 */
-	public function skip_sending_post_to_apple_news( $reject, $post_id ){
+	public function skip_sending_post_to_apple_news( $reject, $post_id ) {
 
 		$post     = get_post( $post_id );
 		$headline = '"' . get_the_title( $post ) . '" (' . $post_id . ')';
 
-		//Reject if 'Auto-publish to Apple News?' has been set to false.
+		// Reject if 'Auto-publish to Apple News?' has been set to false.
 		$auto_publish = true;
 		if ( metadata_exists( 'post', $post->ID, Gutenberg::PUBLISH_META_KEY ) ) {
-			$meta_value = get_post_meta( $post->ID, Gutenberg::PUBLISH_META_KEY, true );
+			$meta_value   = get_post_meta( $post->ID, Gutenberg::PUBLISH_META_KEY, true );
 			$auto_publish = filter_var( $meta_value, FILTER_VALIDATE_BOOLEAN );
 		}
 
