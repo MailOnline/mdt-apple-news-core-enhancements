@@ -20,3 +20,4 @@ require_once( __DIR__ . '/class-auto-retry.php' );
 
 Filters::init();
 Auto_Retry::init();
+Admin::init();
