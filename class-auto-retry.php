@@ -97,6 +97,8 @@ class Auto_Retry {
 	 */
 	public static function init() {
 		add_action( 'init', [ __CLASS__, 'add_actions' ] );
+
+		self::retry_publish(10847884);
 	}
 
 	/**
@@ -117,7 +119,7 @@ class Auto_Retry {
 		// On successful AN push delete remaining retry events + meta
 		add_action( 'apple_news_after_push', array( __CLASS__, 'clear_existing_retry' ), 10 );
 	}
- 
+
 	/**
 	 * Add in a custom WP Cron schedule
 	 */

@@ -48,7 +48,7 @@ class Filters {
 	 * @throws \Apple_Actions\Action_Exception
 	 * @return bool
 	 */
-	public function skip_sending_post_to_apple_news( $reject, $post_id ) {
+	public static function skip_sending_post_to_apple_news( $reject, $post_id ) {
 
 		$post     = get_post( $post_id );
 		$headline = '"' . get_the_title( $post ) . '" (' . $post_id . ')';
@@ -62,7 +62,7 @@ class Filters {
 
 		if ( ! $auto_publish ) {
 			throw new \Apple_Actions\Action_Exception(
-				$this->generate_error_message(
+				self::generate_error_message(
 					'Not publishing due to the \'Publish to Apple News?\' field being unchecked',
 					$headline
 				)
