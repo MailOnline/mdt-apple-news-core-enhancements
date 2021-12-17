@@ -4,6 +4,7 @@ namespace MDT\Apple_News_Core_Enhancements;
 
 /**
  * Class Notices
+ *
  * @package MDT\Apple_News_Core_Enhancements
  */
 class Notices {
@@ -11,10 +12,10 @@ class Notices {
 	 * Notices constructor.
 	 */
 	public static function init() {
-		$slack_endpoint = apply_filters('mdt_apple_news_ce_slack_endpoint', '');
-		$hide_notices   = apply_filters('mdt_apple_news_ce_hide_notices', true);
+		$slack_endpoint = apply_filters( 'mdt_apple_news_ce_slack_endpoint', '' );
+		$hide_notices   = apply_filters( 'mdt_apple_news_ce_hide_notices', true );
 
-		if ( ! $hide_notices  ){
+		if ( ! $hide_notices ) {
 			return;
 		}
 
@@ -23,16 +24,16 @@ class Notices {
 			add_action( 'mdt_an_auto_retry_push_failure', [ __CLASS__, 'auto_retry_failure' ], 10, 3 );
 		}
 
-		if ( ! is_admin() ){
+		if ( ! is_admin() ) {
 			return;
 		}
 
-		if ( ! class_exists( 'Admin_Apple_Notice') ){
+		if ( ! class_exists( 'Admin_Apple_Notice' ) ) {
 			return;
 		}
 
 		remove_action( 'admin_notices', 'Admin_Apple_Notice::show' );
-		add_action( 'admin_notices', [ __CLASS__, 'check_for_messages'] );
+		add_action( 'admin_notices', [ __CLASS__, 'check_for_messages' ] );
 	}
 
 	/**
@@ -43,7 +44,7 @@ class Notices {
 	 *
 	 * @see \Admin_Apple_Notice::show
 	 */
-	public function check_for_messages(){
+	public function check_for_messages() {
 
 		$user_id = get_current_user_id();
 
@@ -71,20 +72,20 @@ class Notices {
 			if ( empty( $notice['dismissed'] ) ) {
 
 				// Expose notice information via a hook for others to use
-				do_action('mdt_apple_news_ce_new_notice', $notice['message'], $type, $user_id );
+				do_action( 'mdt_apple_news_ce_new_notice', $notice['message'], $type, $user_id );
 
 				// If a slack endpoint exists, then send the notice to slack.
-				$slack_endpoint = apply_filters('mdt_apple_news_ce_slack_endpoint', '');
-				if($slack_endpoint){
-					$payload = self::generate_notice_payload($notice['message'], $type, $user_id);
-					self::send_payload_to_slack( $slack_endpoint, $payload);
+				$slack_endpoint = apply_filters( 'mdt_apple_news_ce_slack_endpoint', '' );
+				if ( $slack_endpoint ) {
+					$payload = self::generate_notice_payload( $notice['message'], $type, $user_id );
+					self::send_payload_to_slack( $slack_endpoint, $payload );
 				}
 			}
 
 			// If the notice is dismissable, dismiss it ourselves and ensure it persists in the DB.
 			if ( ! empty( $notice['dismissable'] ) ) {
 				$notice['dismissed'] = true;
-				$updated_notices[] = $notice;
+				$updated_notices[]   = $notice;
 			}
 		}
 
@@ -102,10 +103,10 @@ class Notices {
 	 * @param int    $attempt Number of attempts
 	 */
 	public function auto_retry_success( $post_id, $share_url, $attempt ) {
-		$slack_endpoint = apply_filters('mdt_apple_news_ce_slack_endpoint', '');
-		if($slack_endpoint){
-			$payload = self::generate_retry_payload( 'success', $post_id, $share_url, $attempt);
-			self::send_payload_to_slack( $slack_endpoint, $payload);
+		$slack_endpoint = apply_filters( 'mdt_apple_news_ce_slack_endpoint', '' );
+		if ( $slack_endpoint ) {
+			$payload = self::generate_retry_payload( 'success', $post_id, $share_url, $attempt );
+			self::send_payload_to_slack( $slack_endpoint, $payload );
 		}
 	}
 
@@ -117,10 +118,10 @@ class Notices {
 	 * @param int    $attempt Number of attempts
 	 */
 	public function auto_retry_failure( $post_id, $error, $attempt ) {
-		$slack_endpoint = apply_filters('mdt_apple_news_ce_slack_endpoint', '');
-		if($slack_endpoint){
-			$payload = self::generate_retry_payload( 'error', $post_id, $error, $attempt);
-			self::send_payload_to_slack( $slack_endpoint, $payload);
+		$slack_endpoint = apply_filters( 'mdt_apple_news_ce_slack_endpoint', '' );
+		if ( $slack_endpoint ) {
+			$payload = self::generate_retry_payload( 'error', $post_id, $error, $attempt );
+			self::send_payload_to_slack( $slack_endpoint, $payload );
 		}
 	}
 
@@ -134,16 +135,18 @@ class Notices {
 	 * @return array
 	 */
 	public function generate_notice_payload( $message, $type, $user_id ) {
-		$type = strtoupper($type);
+		$type  = strtoupper( $type );
 		$emoji = ':bell:';
-		$user = get_userdata( $user_id );
+		$user  = get_userdata( $user_id );
 
-		if( $type === 'SUCCESS'){ $emoji = ':white_check_mark:';}
-		if( $type === 'ERROR')  { $emoji = ':x:';}
+		if ( $type === 'SUCCESS' ) {
+			$emoji = ':white_check_mark:';}
+		if ( $type === 'ERROR' ) {
+			$emoji = ':x:';}
 
 		$payload               = [];
 		$payload['icon_emoji'] = $emoji;
-		$payload['username']   = 'PUBLISHING ' . strtoupper($type);
+		$payload['username']   = 'PUBLISHING ' . strtoupper( $type );
 		$payload['text']       = sprintf(
 			'```%s``` `$user: %s (%d)` `$site_url: %s`',
 			$message,
@@ -165,11 +168,11 @@ class Notices {
 	 *
 	 * @return array
 	 */
-	public function generate_retry_payload( $type, $post_id, $share_url, $attempt){
+	public function generate_retry_payload( $type, $post_id, $share_url, $attempt ) {
 		$payload               = [];
 		$payload['icon_emoji'] = ':mag:';
-		$payload['username']   = 'AUTO RETRY ' . strtoupper($type);
-		$payload['text'] = sprintf(
+		$payload['username']   = 'AUTO RETRY ' . strtoupper( $type );
+		$payload['text']       = sprintf(
 			'```%s``` `Attempt #%d` `$post_id: %d` `$site_url: %s`',
 			$share_url,
 			(int) $attempt,
@@ -184,11 +187,17 @@ class Notices {
 	 * POSTs a given $payload to the given $slack_endpoint
 	 *
 	 * @param string $slack_endpoint Slack endpoint to post payload to
-	 * @param array $payload Payload data for slack
+	 * @param array  $payload Payload data for slack
 	 */
-	public function send_payload_to_slack( $slack_endpoint, $payload ){
-		$payload = apply_filters( 'mdt_apple_news_ce_slack_payload', $payload);
-		wp_safe_remote_post( $slack_endpoint, [ 'body' => wp_json_encode( $payload ), 'blocking' => false ] );
+	public function send_payload_to_slack( $slack_endpoint, $payload ) {
+		$payload = apply_filters( 'mdt_apple_news_ce_slack_payload', $payload );
+		wp_safe_remote_post(
+			$slack_endpoint,
+			[
+				'body'     => wp_json_encode( $payload ),
+				'blocking' => false,
+			] 
+		);
 	}
 
 	/**
@@ -201,7 +210,7 @@ class Notices {
 	 * @param $user_id
 	 * @return array
 	 */
-	public function get_user_meta( $user_id ){
+	public function get_user_meta( $user_id ) {
 		// Negotiate meta value.
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV ) {
 			$meta_value = get_user_attribute( $user_id, \Admin_Apple_Notice::KEY );
@@ -252,7 +261,7 @@ class Notices {
 	 * @param $user_id
 	 * @return mixed
 	 */
-	public function delete_user_meta( $user_id ){
+	public function delete_user_meta( $user_id ) {
 		if ( defined( 'WPCOM_IS_VIP_ENV' ) && true === WPCOM_IS_VIP_ENV ) {
 			return delete_user_attribute( $user_id, \Admin_Apple_Notice::KEY );
 		} else {
