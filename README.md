@@ -1,5 +1,5 @@
 # Apple News Core Enhancements
-Core ehancements to the [`Publish to Apple News`](https://en-gb.wordpress.org/plugins/publish-to-apple-news/) plugin by Alley Interactive
+Core enhancements to the [`Publish to Apple News`](https://en-gb.wordpress.org/plugins/publish-to-apple-news/) plugin by Alley Interactive
 
 # Installation
 Download the [latest release](https://github.com/MailOnline/mdt-apple-news-core-enhancements/releases/latest) and include it within your plugins folder and enable as normal. This plugin has a dependency on the [`Publish to Apple News`](https://en-gb.wordpress.org/plugins/) plugin and will do nothing if it isn't also enabled on the same WordPress install.
