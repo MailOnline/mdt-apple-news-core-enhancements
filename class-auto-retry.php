@@ -97,8 +97,6 @@ class Auto_Retry {
 	 */
 	public static function init() {
 		add_action( 'init', [ __CLASS__, 'add_actions' ] );
-
-		self::retry_publish(10847884);
 	}
 
 	/**
