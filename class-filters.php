@@ -125,7 +125,7 @@ class Filters {
 	public function delete_apple_news_notices($response){
 		if(
 			isset($response->data['apple_news_notices'])
-			&& !apply_filters('mdt_apple_news_ce_show_gutenberg_editor_notices', false)
+			&& !apply_filters('mdt_apple_news_ce_hide_notices', false)
 		){
 			$response->data['apple_news_notices'] = [];
 		}
