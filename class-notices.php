@@ -12,6 +12,13 @@ class Notices {
 	 * Notices constructor.
 	 */
 	public static function init() {
+		add_action('init', [__CLASS__, 'add_actions']);
+	}
+
+	/**
+	 * Adding actions
+	 */
+	public function add_actions(){
 		$slack_endpoint = apply_filters( 'mdt_apple_news_ce_slack_endpoint', '' );
 		$hide_notices   = apply_filters( 'mdt_apple_news_ce_hide_notices', true );
 
@@ -23,6 +30,7 @@ class Notices {
 			add_action( 'mdt_an_auto_retry_push_success', [ __CLASS__, 'auto_retry_success' ], 10, 3 );
 			add_action( 'mdt_an_auto_retry_push_failure', [ __CLASS__, 'auto_retry_failure' ], 10, 3 );
 		}
+
 
 		if ( ! is_admin() ) {
 			return;
@@ -196,7 +204,7 @@ class Notices {
 			[
 				'body'     => wp_json_encode( $payload ),
 				'blocking' => false,
-			] 
+			]
 		);
 	}
 

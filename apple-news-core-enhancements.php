@@ -20,15 +20,10 @@ require_once( __DIR__ . '/class-notices.php' );
 require_once( __DIR__ . '/class-filters.php' );
 require_once( __DIR__ . '/class-auto-retry.php' );
 
-add_action(
-	'init',
-	function() {
-		Notices::init();
-		Filters::init();
-		Auto_Retry::init();
-		Admin::init();
-		Gutenberg::init();
-	}
-);
+Notices::init();
+Filters::init();
+Auto_Retry::init();
+Admin::init();
+Gutenberg::init();
 
 
