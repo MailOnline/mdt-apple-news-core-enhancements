@@ -17,6 +17,7 @@ class Filters {
 		add_filter( 'apple_news_skip_push', [ __CLASS__, 'skip_sending_post_to_apple_news' ], 10, 2 );
 		add_filter( 'apple_news_initialize_components', [ __CLASS__, 'add_custom_components' ] );
 		add_filter( 'apple_news_generate_json', [ __CLASS__, 'filter_json_content' ], 30, 2 );
+		add_filter( 'apple_news_body_json', [__CLASS__, 'strip_broken_anchors']);
 		add_filter( 'rest_prepare_post', [ __CLASS__, 'delete_apple_news_notices' ], 30 );
 	}
 
@@ -110,6 +111,74 @@ class Filters {
 	 */
 	public function remove_empty_components( $json ) {
 		$json['components'] = array_values( array_filter( $json['components'] ) );
+
+		return $json;
+	}
+
+	/**
+	 * Removes broken http(s) anchors from body components to avoid the article being rejected
+	 * by the apple news api when publishing or updating.
+	 *
+	 * @param $json
+	 * @return mixed
+	 */
+	public function strip_broken_anchors($json){
+		if($json['text'] && false !== strpos($json['text'], '<a')){
+			$dom = new \DOMDocument();
+			libxml_use_internal_errors( true );
+			$dom->loadHTML( '<html><body>' . $json['text'] . '</body></html>' );
+			libxml_clear_errors( true );
+
+			$valid_node_class = 'DOMElement';
+			$anchors = $dom->getElementsByTagName( 'a' );
+
+			if($anchors->length > 0){
+				foreach($anchors as $anchor){
+					if ( ! $anchor instanceof $valid_node_class ) {
+						continue;
+					}
+
+					$href = $anchor->getAttribute('href');
+					$text = $anchor->textContent;
+
+
+					//if no href replace with text or delete anchor if no text
+					if(!$href){
+						if($text){
+							$textNode = $dom->createTextNode( $text );
+							$anchor->parentNode->replaceChild( $textNode, $anchor );
+						} else {
+							$anchor->parentNode->removeChild( $anchor );
+						}
+						continue;
+					}
+
+					//Skip valid, non-http(s) protocols
+					if(preg_match('/^(mailto|#|webcal|stocks|action|music|musics)/', $href)){
+						continue;
+					}
+
+					//Strip links that aren't http(s) protocols
+					if(!preg_match('/^(https|http)/', $href)){
+						$anchor->parentNode->removeChild( $anchor );
+						continue;
+					}
+
+					if ( !filter_var( $href, FILTER_VALIDATE_URL ) ) {
+						if($text){
+							$textNode = $dom->createTextNode( $text );
+							$anchor->parentNode->replaceChild( $textNode, $anchor );
+						} else {
+							$anchor->parentNode->removeChild( $anchor );
+						}
+					}
+
+					$body = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
+					$json['text'] = $dom->saveHTML($body);
+				}
+			}
+
+		}
 
 		return $json;
 	}
