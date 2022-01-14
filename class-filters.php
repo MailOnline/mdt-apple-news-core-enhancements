@@ -123,7 +123,11 @@ class Filters {
 	 * @return mixed
 	 */
 	public function strip_broken_anchors($json){
-		if($json['text'] && false !== strpos($json['text'], '<a')){
+		if(
+			apply_filters('mdt_apple_news_ce_strip_broken_anchors', true)
+			&& $json['text']
+			&& false !== strpos($json['text'], '<a')
+		){
 			$dom = new \DOMDocument();
 			libxml_use_internal_errors( true );
 			$dom->loadHTML( '<html><body>' . $json['text'] . '</body></html>' );
