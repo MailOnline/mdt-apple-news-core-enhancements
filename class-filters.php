@@ -134,52 +134,53 @@ class Filters {
 			libxml_clear_errors( true );
 
 			$valid_node_class = 'DOMElement';
-			$anchors = $dom->getElementsByTagName( 'a' );
+			$body = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
 
-			if($anchors->length > 0){
-				foreach($anchors as $anchor){
-					if ( ! $anchor instanceof $valid_node_class ) {
+			$json_text = '';
+
+
+			if($body->childNodes->length > 0){
+				foreach($body->childNodes as $node){
+					if (!$node instanceof $valid_node_class) {
+						$json_text .= $dom->saveHTML($node);
 						continue;
 					}
 
-					$href = $anchor->getAttribute('href');
-					$text = $anchor->textContent;
+					if($node->tagName === 'a'){
+						$href = $node->getAttribute('href');
+						$text = $node->textContent;
 
-
-					//if no href replace with text or delete anchor if no text
-					if(!$href){
-						if($text){
-							$textNode = $dom->createTextNode( $text );
-							$anchor->parentNode->replaceChild( $textNode, $anchor );
-						} else {
-							$anchor->parentNode->removeChild( $anchor );
+						//if no href replace with text or "delete" anchor if no text
+						if(!$href){
+							if($text){
+								$text_node = $dom->createTextNode( $text );
+								$json_text .= $dom->saveHTML($text_node);
+							}
+							continue;
 						}
-						continue;
-					}
 
-					//Skip valid, non-http(s) protocols
-					if(preg_match('/^(mailto|#|webcal|stocks|action|music|musics)/', $href)){
-						continue;
-					}
+						//Skip valid, non-http(s) protocols
+						if(preg_match('/^(mailto|#|webcal|stocks|action|music|musics)/', $href)){
+							$json_text .= $dom->saveHTML($node);
+							continue;
+						}
 
-					//Strip links that aren't http(s) protocols
-					if(!preg_match('/^(https|http)/', $href)){
-						$anchor->parentNode->removeChild( $anchor );
-						continue;
-					}
+						//"Delete" links that aren't http(s) protocols
+						if(!preg_match('/^(https|http)/', $href)){
+							continue;
+						}
 
-					if ( !filter_var( $href, FILTER_VALIDATE_URL ) ) {
-						if($text){
-							$textNode = $dom->createTextNode( $text );
-							$anchor->parentNode->replaceChild( $textNode, $anchor );
-						} else {
-							$anchor->parentNode->removeChild( $anchor );
+						if ( !filter_var( $href, FILTER_VALIDATE_URL ) ) {
+							if($text){
+								$text_node = $dom->createTextNode( $text );
+								$json_text .= $dom->saveHTML($text_node);
+							}
+							continue;
 						}
 					}
-
-					$body = $dom->getElementsByTagName( 'body' )->item( 0 )->childNodes->item( 0 );
-					$json['text'] = $dom->saveHTML($body);
+					$json_text .= $dom->saveHTML($node);
 				}
+				$json['text'] = $json_text;
 			}
 
 		}
