@@ -3,7 +3,7 @@
  * Plugin Name: Apple News Core Enhancements
  * Plugin URI:  https://github.com/MailOnline/mdt-apple-news-core-enhancements/
  * Description: Core enhancements for the publish-to-apple-news plugin
- * Version:     1.0.4
+ * Version:     1.0.5
  * Author:      Metro.co.uk
  * Author URI:  https://github.com/MailOnline/mdt-apple-news-auto-retry/graphs/contributors
  */
