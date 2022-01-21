@@ -10,19 +10,19 @@
 
 namespace MDT\Apple_News_Core_Enhancements;
 
-if ( ! class_exists( '\Apple_News' ) || ! class_exists( '\Admin_Apple_Settings' ) ) {
-	return;
-}
-
-require_once( __DIR__ . '/class-gutenberg.php' );
-require_once( __DIR__ . '/class-admin.php' );
-require_once( __DIR__ . '/class-notices.php' );
-require_once( __DIR__ . '/class-filters.php' );
-require_once( __DIR__ . '/class-auto-retry.php' );
-
 add_action(
 	'init',
 	function() {
+		if ( ! class_exists( '\Apple_News' ) || ! class_exists( '\Admin_Apple_Settings' ) ) {
+			return;
+		}
+
+		require_once( __DIR__ . '/class-gutenberg.php' );
+		require_once( __DIR__ . '/class-admin.php' );
+		require_once( __DIR__ . '/class-notices.php' );
+		require_once( __DIR__ . '/class-filters.php' );
+		require_once( __DIR__ . '/class-auto-retry.php' );
+
 		Notices::init();
 		Filters::init();
 		Auto_Retry::init();
