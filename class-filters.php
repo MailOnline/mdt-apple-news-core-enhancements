@@ -130,7 +130,7 @@ class Filters {
 		){
 			$dom = new \DOMDocument();
 			libxml_use_internal_errors( true );
-			$dom->loadHTML( '<html><body>' . $json['text'] . '</body></html>' );
+			$dom->loadHTML( '<?xml encoding="utf-8" ?>' . '<html><body>' . $json['text'] . '</body></html>' );
 			libxml_clear_errors( true );
 
 			$valid_node_class = 'DOMElement';
