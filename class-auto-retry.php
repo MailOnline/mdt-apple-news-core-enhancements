@@ -293,7 +293,7 @@ class Auto_Retry {
 					'column'   => 'post_modified',
 				),
 			),
-			'posts_per_page' => -1,
+			'posts_per_page' => 100,
 			'fields'         => 'ids',
 		);
 

@@ -32,7 +32,7 @@ class Gutenberg {
 	 */
 	public static function enqueue_block_editor_assets() {
 		if ( 'post' === get_post_type() ) {
-			$asset_data = include( __DIR__ . 'build/index.asset.php' );
+			$asset_data = include( __DIR__ . '/build/index.asset.php' );
 			wp_enqueue_script(
 				'mdt-gutenberg-apple-news',
 				plugin_dir_url( __FILE__ ) . 'build/index.js',
