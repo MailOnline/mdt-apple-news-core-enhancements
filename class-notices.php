@@ -12,6 +12,13 @@ class Notices {
 	 * Notices constructor.
 	 */
 	public static function init() {
+		add_action('init', [__CLASS__, 'add_actions']);
+	}
+
+	/**
+	 * Adding actions
+	 */
+	public function add_actions(){
 		$slack_endpoint = apply_filters( 'mdt_apple_news_ce_slack_endpoint', '' );
 		$hide_notices   = apply_filters( 'mdt_apple_news_ce_hide_notices', true );
 
@@ -196,7 +203,7 @@ class Notices {
 			[
 				'body'     => wp_json_encode( $payload ),
 				'blocking' => false,
-			] 
+			]
 		);
 	}
 
